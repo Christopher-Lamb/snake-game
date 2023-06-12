@@ -1,7 +1,8 @@
 import * as React from "react";
 
 const SnakeHead = ({ coords = { x: 100, y: 100 } }) => {
-  return <div className="absolute h-5 w-5 bg-black" style={{ top: `${coords.y}px`, left: `${coords.x}px` }} />;
+  // console.log(coords)
+  return <div className="absolute h-[18px] w-[18px] bg-[#45b800]" style={{ top: `${coords.y}px`, left: `${coords.x}px` }} />;
 };
 
 export default SnakeHead;
