@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import SnakeHead from "../components/SnakeHead";
 import SnakeTail from "../components/SnakeTail";
 import ScoreBoard from "../components/ScoreBoard";
+import Settings from "../components/Settings";
 import useCoordSetter from "../hooks/useCoordSetter";
 import Apple from "../components/Apple";
 
@@ -23,14 +24,13 @@ function coordInArrChecker(coord, arr = []) {
 }
 
 const SnakeGame = () => {
-  // const [coords, setCoords] = useState({ x: 0, y: 0 });
-  // const prevPos = useRef([]);
+  const [isScoreBoard, setIsScoreBoard] = useState(true);
+  const [isSettings, setIsSettings] = useState(true);
   const [appleCoords, setAppleCoords] = useState({ x: 20, y: 20 });
   const { coord, prevCoords, snakeLen, dispatch } = useCoordSetter();
   // const [direction, setDirection] = useState("");
   const direction = useRef("");
   const gameIntervalId = useRef(0);
-  const backgroundIntervalId = useRef(0);
   // const
 
   useEffect(() => {
@@ -47,11 +47,11 @@ const SnakeGame = () => {
     const height = Math.floor(gameHeight / 20);
     while (true) {
       cnt = cnt + 1;
-      console.log("Gen apple");
+      // console.log("Gen apple");
       const appleX = Math.floor(Math.random() * width) * 20;
       const appleY = Math.floor(Math.random() * height) * 20;
       const res = coordInArrChecker({ x: appleX, y: appleY }, prevCoords);
-      console.log(res);
+      // console.log(res);
       if (cnt > 100) break;
       if (!res) {
         setAppleCoords({ x: appleX, y: appleY });
@@ -60,7 +60,7 @@ const SnakeGame = () => {
     }
   };
 
-  const snakeEatsApple = () => {
+  const handleSnakeInteraction = () => {
     //Game tick logic for apple
     if (appleCoords.x === coord.x && appleCoords.y === coord.y) {
       console.log(true);
@@ -81,8 +81,13 @@ const SnakeGame = () => {
     if (res) {
       console.log("Bit Body");
       clearInterval(gameIntervalId.current);
+      gameStop();
     }
   };
+
+  useEffect(() => {
+    handleSnakeInteraction();
+  }, [coord, appleCoords, isScoreBoard, prevCoords]);
 
   const keyHandler = (key) => {
     switch (key) {
@@ -109,15 +114,15 @@ const SnakeGame = () => {
 
   const gameStart = () => {
     clearInterval(gameIntervalId.current);
-    clearInterval(backgroundIntervalId.current);
-    // dispatch({ type: "start" });
+    dispatch({ type: "reset" });
+    direction.current = "";
+    setIsScoreBoard(false);
     handleSnake();
   };
 
   const gameStop = () => {
-    // dispatch({ type: "stop" });
     clearInterval(gameIntervalId.current);
-    clearInterval(backgroundIntervalId.current);
+    setIsScoreBoard(true);
   };
 
   const handleSnake = () => {
@@ -144,11 +149,13 @@ const SnakeGame = () => {
     }, tickSpeed);
   };
 
-  snakeEatsApple();
+  // snakeEatsApple();
+
   return (
-    <main className="flex justify-center items-center h-[100vh]">
-        <ScoreBoard />
-      <div className={`relative w-[${gameWidth}px] h-[${gameHeight}px] bg-gray-300`}>
+    <main className="flex relative justify-center items-center h-[100vh]">
+      {isSettings && <Settings />}
+      {isScoreBoard && <ScoreBoard score={snakeLen} onNewGame={gameStart} onSettings={() => setIsSettings(true)} />}
+      <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px` }} className={`relative bg-gray-300`}>
         {/* <button className="absolute top-[-80px] left-[230px] bg-green-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStart}>
           Start
         </button>
@@ -156,7 +163,7 @@ const SnakeGame = () => {
           Stop
         </button> */}
         {/* <div>{JSON.stringify(appleCoords)}</div>
-      <div>{JSON.stringify(coord)}</div> */}
+        <div>{JSON.stringify(coord)}</div> */}
         <SnakeHead coords={coord} />
         <SnakeTail prevCoords={prevCoords} length={snakeLen} />
         <Apple coords={appleCoords} />

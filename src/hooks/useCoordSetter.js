@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useReducer } from "react";
 
-const stateInit = { coord: { x: 0, y: 0 }, prevCoords: [], snakeLen: 1, currentDirection: "", canMove: true };
+const stateInit = { coord: { x: 80, y: 80 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
 const incrememnt = 20;
 
 function arrayLimiter(arr, length) {
@@ -84,16 +84,8 @@ function reducer(state, action) {
         ...state,
         snakeLen: state.snakeLen + 1,
       };
-    case "stop":
-      return {
-        ...state,
-        canMove: false,
-      };
-    case "start":
-      return {
-        ...state,
-        canMove: true,
-      };
+    case "reset":
+      return { coord: { x: 80, y: 80 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
 
     default:
       return state;
