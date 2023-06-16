@@ -153,7 +153,13 @@ const SnakeGame = () => {
 
   return (
     <main className="flex relative justify-center items-center h-[100vh]">
-      {isSettings && <Settings />}
+      {isSettings && (
+        <Settings
+          onClose={() => {
+            setIsSettings(false);
+          }}
+        />
+      )}
       {isScoreBoard && <ScoreBoard score={snakeLen} onNewGame={gameStart} onSettings={() => setIsSettings(true)} />}
       <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px` }} className={`relative bg-gray-300`}>
         {/* <button className="absolute top-[-80px] left-[230px] bg-green-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStart}>

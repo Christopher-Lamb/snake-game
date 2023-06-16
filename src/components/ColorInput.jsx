@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 
-
 const colors = [
   ["#f8fafc", "#f1f5f9", "#cbd5e1", "#94a3b8", "#475569", "#1e293b", "#020617"],
 
@@ -39,15 +38,16 @@ export default function ColorInput({ defaultColor = "#f1f5f9", onColorSelect = (
   };
 
   return (
-    <div onClick={() => setIsColorBoard(true)} style={{ background: color }} className="relative z-[102] inline-block w-10 h-10 border rounded drop-shadow-md cursor-pointer">
+    <div className="relative">
       {isColorBoard && <ColorBoard onColorSelect={handleColorSelect} />}
+      <div onClick={() => setIsColorBoard(true)} style={{ background: color }} className="relative inline-block w-10 h-10 z-[103] border rounded drop-shadow-md cursor-pointer"></div>
     </div>
   );
 }
 
 const ColorBoard = ({ onColorSelect = () => {} }) => {
   return (
-    <div className="absolute  flex drop-shadow-md hover:scale-100">
+    <div className="absolute flex z-[104] drop-shadow-md hover:scale-100">
       {colors.map((arr, i) => (
         <ColorLine key={i} classNameArr={arr} onColorSelect={onColorSelect} />
       ))}
