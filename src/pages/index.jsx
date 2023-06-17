@@ -5,9 +5,10 @@ import ScoreBoard from "../components/ScoreBoard";
 import Settings from "../components/Settings";
 import useCoordSetter from "../hooks/useCoordSetter";
 import Apple from "../components/Apple";
+import { SettingsProvider, useSettings } from "../context/SettingsContext";
 
-const gameHeight = 400;
-const gameWidth = 400;
+// const gameHeight = 400;
+// const gameWidth = 400;
 const tickSpeed = 100;
 
 //Need a function that checks if a coord in an array of coords
@@ -25,17 +26,27 @@ function coordInArrChecker(coord, arr = []) {
 
 const SnakeGame = () => {
   const [isScoreBoard, setIsScoreBoard] = useState(true);
-  const [isSettings, setIsSettings] = useState(true);
+  const [isSettings, setIsSettings] = useState(false);
   const [appleCoords, setAppleCoords] = useState({ x: 20, y: 20 });
   const { coord, prevCoords, snakeLen, dispatch } = useCoordSetter();
   // const [direction, setDirection] = useState("");
   const direction = useRef("");
   const gameIntervalId = useRef(0);
+  const settings = useSettings();
+
+  const gameWidth = parseInt(settings.gridWidth) * (parseInt(settings.snakeSize) + 2);
+  const gameHeight = parseInt(settings.gridHeight) * (parseInt(settings.snakeSize) + 2);
+
   // const
 
   useEffect(() => {
     window.addEventListener("keydown", (event) => keyHandler(event.key));
     randomApple();
+
+    const storedSettings = localStorage.getItem("snake-settings");
+    if (Object.is(null, storedSettings)) {
+    }
+
     return () => {
       window.removeEventListener("keydown", (e) => {});
     };
@@ -43,15 +54,17 @@ const SnakeGame = () => {
 
   const randomApple = () => {
     let cnt = 0;
-    const width = Math.floor(gameWidth / 20);
-    const height = Math.floor(gameHeight / 20);
+    const width = parseInt(settings.gridWidth);
+    const height = parseInt(settings.gridHeight);
+    const block = parseInt(settings.snakeSize) + 2;
+
     while (true) {
       cnt = cnt + 1;
-      // console.log("Gen apple");
-      const appleX = Math.floor(Math.random() * width) * 20;
-      const appleY = Math.floor(Math.random() * height) * 20;
+      // //$&
+      const appleX = Math.floor(Math.random() * width) * block;
+      const appleY = Math.floor(Math.random() * height) * block;
       const res = coordInArrChecker({ x: appleX, y: appleY }, prevCoords);
-      // console.log(res);
+      // //$&
       if (cnt > 100) break;
       if (!res) {
         setAppleCoords({ x: appleX, y: appleY });
@@ -63,23 +76,23 @@ const SnakeGame = () => {
   const handleSnakeInteraction = () => {
     //Game tick logic for apple
     if (appleCoords.x === coord.x && appleCoords.y === coord.y) {
-      console.log(true);
+      //$&
       dispatch({ type: "add" });
       randomApple();
     }
 
     if (coord.x < 0 || coord.y < 0 || coord.x >= gameWidth || coord.y >= gameHeight) {
       // dispatch({ type: "stop" });
-      // console.log("STOP");
+      // //$&
       gameStop();
     }
 
     const bodyNoHead = prevCoords.slice(1, prevCoords.length);
-    console.log(Array.isArray(bodyNoHead));
-    console.log(bodyNoHead);
+    //$&
+    //$&
     const res = coordInArrChecker(coord, bodyNoHead);
     if (res) {
-      console.log("Bit Body");
+      //$&
       clearInterval(gameIntervalId.current);
       gameStop();
     }
@@ -93,24 +106,21 @@ const SnakeGame = () => {
     switch (key) {
       case "ArrowUp":
         direction.current = "Up";
-        // dispatch({ type: "Up" });
         break;
       case "ArrowDown":
-        // dispatch({ type: "Down" });
         direction.current = "Down";
         break;
       case "ArrowLeft":
-        // dispatch({ type: "Left" });
         direction.current = "Left";
         break;
       case "ArrowRight":
-        // dispatch({ type: "Right" });
         direction.current = "Right";
         break;
       default:
         break;
     }
   };
+  // //$&
 
   const gameStart = () => {
     clearInterval(gameIntervalId.current);
@@ -118,6 +128,7 @@ const SnakeGame = () => {
     direction.current = "";
     setIsScoreBoard(false);
     handleSnake();
+    randomApple();
   };
 
   const gameStop = () => {
@@ -130,42 +141,44 @@ const SnakeGame = () => {
       //Game
       switch (direction.current) {
         case "Up":
-          dispatch({ type: "Up" });
+          dispatch({ type: "Up", increment: parseInt(settings.snakeSize) + 2 });
           break;
         case "Down":
-          dispatch({ type: "Down" });
+          dispatch({ type: "Down", increment: parseInt(settings.snakeSize) + 2 });
           break;
         case "Left":
-          dispatch({ type: "Left" });
+          dispatch({ type: "Left", increment: parseInt(settings.snakeSize) + 2 });
           break;
         case "Right":
-          dispatch({ type: "Right" });
+          dispatch({ type: "Right", increment: parseInt(settings.snakeSize) + 2 });
           break;
         default:
           break;
       }
 
       //Wait for user input
-    }, tickSpeed);
+    }, parseInt(settings.gameSpeed));
   };
 
   // snakeEatsApple();
+  //$&
 
   return (
     <main className="flex relative justify-center items-center h-[100vh]">
       {isSettings && (
         <Settings
-          onClose={() => {
+          onClose={(settings) => {
             setIsSettings(false);
+            //$&
           }}
         />
       )}
       {isScoreBoard && <ScoreBoard score={snakeLen} onNewGame={gameStart} onSettings={() => setIsSettings(true)} />}
-      <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px` }} className={`relative bg-gray-300`}>
+      <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px`, background: settings.gameBoardColor }} className={`relative`}>
         {/* <button className="absolute top-[-80px] left-[230px] bg-green-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStart}>
           Start
-        </button>
-        <button className="absolute top-[-80px] left-[320px] bg-red-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStop}>
+          </button>
+          <button className="absolute top-[-80px] left-[320px] bg-red-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStop}>
           Stop
         </button> */}
         {/* <div>{JSON.stringify(appleCoords)}</div>
@@ -178,6 +191,14 @@ const SnakeGame = () => {
   );
 };
 
-export default SnakeGame;
+// export SnakeGame;
+
+export default function Main() {
+  return (
+    <SettingsProvider>
+      <SnakeGame />
+    </SettingsProvider>
+  );
+}
 
 export const Head = () => <title>Snake Game</title>;

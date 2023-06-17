@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSettings } from "../context/SettingsContext";
 
 export default function ScoreBoard({ score = 0, onNewGame = () => {}, onSettings = () => {} }) {
   const [highscore, setHighscoreState] = useState(0);

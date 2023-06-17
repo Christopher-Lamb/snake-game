@@ -2,22 +2,27 @@ import React, { useEffect, useRef, useState } from "react";
 import ColorInput from "./ColorInput";
 import { BsPlus } from "react-icons/bs";
 import { IoIosClose } from "react-icons/io";
+import { useSettings, useSettingsDispatch } from "../context/SettingsContext";
 
 const initSnakeBody = { id: crypto.randomUUID(), number: 1, color: "#22c55e" };
 
 export default function Settings({ onClose = () => {} }) {
-  const [gameBoardColor, setGameBoardColor] = useState("#ffffff");
-  const [snakeBodies, setSnakeBodies] = useState([initSnakeBody]);
+  // const [gameBoardColor, setGameBoardColor] = useState("#ffffff");
+  const settingsDispatch = useSettingsDispatch();
+  const { snakeBody, ...other } = useSettings();
+  const [snakeBodies, setSnakeBodies] = useState(snakeBody);
+  //$&
   const [state, setState] = useState({
-    darkmode: false,
-    gameBoardColor: "#f1f5f9",
-    appleColor: "#ef4444",
-    snakeHeadColor: "#16a34a",
-    gameSpeed: "100",
-    gridWidth: "16",
-    gridHeight: "16",
-    snakeSize: "18",
+    ...other,
   });
+
+  useEffect(() => {
+    let storedSettings = localStorage.getItem("snake-settings");
+    if (Object.is(storedSettings, null)) {
+      localStorage.setItem("snake-settings", JSON.stringify({ ...state, snakeBodies }));
+      storedSettings = { ...state, snakeBodies };
+    }
+  }, []);
 
   const handleAddSnakeBody = () => {
     setSnakeBodies((sb) => [...sb, { id: crypto.randomUUID(), number: 1, color: "#f1f5f9" }]);
@@ -32,7 +37,7 @@ export default function Settings({ onClose = () => {} }) {
       }
     });
     setSnakeBodies(newArr);
-    console.log(targetBody);
+    // //$&
   };
 
   const handleDeleteSnakeBody = (deleteId) => {
@@ -40,10 +45,20 @@ export default function Settings({ onClose = () => {} }) {
     setSnakeBodies(newArr);
   };
 
+  const handleClose = () => {
+    onClose({ ...state, snakeBodies });
+    localStorage.setItem("snake-settings", JSON.stringify({ ...state, snakeBodies }));
+    //dispatch
+    settingsDispatch({ type: "update-all", payload: { ...state, snakeBody: snakeBodies } });
+  };
+
   return (
-    <div className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg min-h-[31.25rem] z-[101] drop-shadow-md bg-white rounded p-6">
+    <div
+      className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg min-h-[31.25rem] z-[101] drop-shadow-md rounded p-6"
+      style={{ color: `${state.darkmode ? "#c4c4c4" : "black"}`, background: `${state.darkmode ? "#23232b" : "white"}` }}
+    >
       <div className="relative w-full h-0 mx-[-12px]">
-        <IoIosClose size="2rem" className="absolute z-[103] left-full cursor-pointer" onClick={() => onClose()} />
+        <IoIosClose size="2rem" className="absolute z-[103] left-full cursor-pointer" onClick={handleClose} />
       </div>
       <div className="flex items-center gap-4 ">
         <label htmlFor="flexSwitchCheckDefault">Dark Mode</label>
@@ -126,7 +141,7 @@ const SnakeBody = ({ defaultColor, defaultNumber, onChange = () => {}, onDelete 
 
   useEffect(() => {
     onChange({ color, number });
-    console.log(color, number);
+    // //$&
   }, [color, number]);
 
   return (
@@ -160,7 +175,7 @@ const NumberInput = ({ number, handleChange }) => {
       onFocus={handleFocus}
       onBlur={handleFocusOut}
       onChange={(e) => handleChange(e.target.value)}
-      className="w-10 h-10 drop-shadow-md border text-xl text-center"
+      className="w-10 h-10 drop-shadow-md border text-xl text-center text-black"
     ></input>
   );
 };
@@ -187,7 +202,7 @@ const LargeNumberInput = ({ defaultNumber, handleChange = () => {} }) => {
       onFocus={handleFocus}
       onBlur={handleFocusOut}
       onChange={(e) => handleChange(e.target.value)}
-      className="w-16 h-10 drop-shadow-md border text-xl text-center"
+      className="w-16 h-10 drop-shadow-md border text-xl text-center text-black"
     ></input>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useReducer } from "react";
 
-const stateInit = { coord: { x: 80, y: 80 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
-const incrememnt = 20;
+const stateInit = { coord: { x: 0, y: 0 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
 
 function arrayLimiter(arr, length) {
   // Take length and spit array that long
@@ -16,13 +15,13 @@ function reducer(state, action) {
   let stateObj = {};
   switch (action.type) {
     case "Up":
-      console.log("UP");
+      //$&
       newDirection = "Up";
-      newCoord = { ...state.coord, y: state.coord.y - incrememnt };
+      newCoord = { ...state.coord, y: state.coord.y - action.increment };
       if (state.currentDirection === "Down" && state.snakeLen > 1) {
-        console.log("Up but going Down");
+        //$&
         newDirection = "Down";
-        newCoord = { ...state.coord, y: state.coord.y + incrememnt };
+        newCoord = { ...state.coord, y: state.coord.y + action.increment };
       }
       newPrev = arrayLimiter([newCoord, ...state.prevCoords], state.snakeLen);
       return {
@@ -32,13 +31,13 @@ function reducer(state, action) {
         prevCoords: newPrev,
       };
     case "Down":
-      console.log("DOWN");
+      //$&
       newDirection = "Down";
-      newCoord = { ...state.coord, y: state.coord.y + incrememnt };
+      newCoord = { ...state.coord, y: state.coord.y + action.increment };
       if (state.currentDirection === "Up" && state.snakeLen > 1) {
-        console.log("Down but going UP");
+        //$&
         newDirection = "Up";
-        newCoord = { ...state.coord, y: state.coord.y - incrememnt };
+        newCoord = { ...state.coord, y: state.coord.y - action.increment };
       }
       newPrev = arrayLimiter([newCoord, ...state.prevCoords], state.snakeLen);
       return {
@@ -48,13 +47,13 @@ function reducer(state, action) {
         prevCoords: newPrev,
       };
     case "Left":
-      console.log("LEFT");
+      //$&
       newDirection = "Left";
-      newCoord = { ...state.coord, x: state.coord.x - incrememnt };
+      newCoord = { ...state.coord, x: state.coord.x - action.increment };
       if (state.currentDirection === "Right" && state.snakeLen > 1) {
-        console.log("Left by going RIGHT");
+        //$&
         newDirection = "Right";
-        newCoord = { ...state.coord, x: state.coord.x + incrememnt };
+        newCoord = { ...state.coord, x: state.coord.x + action.increment };
       }
       newPrev = arrayLimiter([newCoord, ...state.prevCoords], state.snakeLen);
       return {
@@ -64,13 +63,13 @@ function reducer(state, action) {
         prevCoords: newPrev,
       };
     case "Right":
-      console.log("RIGHT");
+      //$&
       newDirection = "Right";
-      newCoord = { ...state.coord, x: state.coord.x + incrememnt };
+      newCoord = { ...state.coord, x: state.coord.x + action.increment };
       if (state.currentDirection === "Left" && state.snakeLen > 1) {
-        console.log("Right by going LEFT");
+        //$&
         newDirection = "Left";
-        newCoord = { ...state.coord, x: state.coord.x - incrememnt };
+        newCoord = { ...state.coord, x: state.coord.x - action.increment };
       }
       newPrev = arrayLimiter([newCoord, ...state.prevCoords], state.snakeLen);
       return {
@@ -85,7 +84,7 @@ function reducer(state, action) {
         snakeLen: state.snakeLen + 1,
       };
     case "reset":
-      return { coord: { x: 80, y: 80 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
+      return { coord: { x: 0, y: 0 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
 
     default:
       return state;
