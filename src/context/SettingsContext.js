@@ -11,7 +11,7 @@ const initialSettings = {
   gameSpeed: "200",
   gridWidth: "16",
   gridHeight: "16",
-  snakeSize: "18",
+  snakeSize: "25",
   snakeBody: [initSnakeBody],
 };
 
@@ -47,5 +47,7 @@ const settingsReducer = (settings, action) => {
       return { ...action.payload };
     case "reset":
       return { ...initSnakeBody };
+    case "darkmode":
+      return { ...settings, darkmode: action.payload };
   }
 };

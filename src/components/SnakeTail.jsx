@@ -16,7 +16,7 @@ const SnakeTail = ({ prevCoords = [], length }) => {
   //Map the number of coords based of for fucks sake
   const createPatterArr = () => {
     let colors = [];
-    const colorArr = snakeBody.forEach(({ color, number }) => {
+    snakeBody.forEach(({ color, number }) => {
       for (let i = 0; i < number; i++) {
         colors.push(color);
       }

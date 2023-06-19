@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useReducer } from "react";
+import React, { useReducer } from "react";
 
 const stateInit = { coord: { x: 0, y: 0 }, prevCoords: [], snakeLen: 1, currentDirection: "" };
 
@@ -91,10 +91,10 @@ function reducer(state, action) {
   }
 }
 
-const useCoordSetter = () => {
+const useSnakeSetter = () => {
   const [state, dispatch] = useReducer(reducer, stateInit);
   const { coord, prevCoords, snakeLen } = state;
   return { coord, prevCoords, snakeLen, dispatch };
 };
 
-export default useCoordSetter;
+export default useSnakeSetter;

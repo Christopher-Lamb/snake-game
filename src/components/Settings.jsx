@@ -6,23 +6,26 @@ import { useSettings, useSettingsDispatch } from "../context/SettingsContext";
 
 const initSnakeBody = { id: crypto.randomUUID(), number: 1, color: "#22c55e" };
 
+const mainDark = {
+  color: "#c4c4c4",
+  background: "#23232b",
+  border: "1px solid #c4c4c4",
+};
+
+const mainLight = {
+  background: "white",
+  color: "black",
+};
+
 export default function Settings({ onClose = () => {} }) {
   // const [gameBoardColor, setGameBoardColor] = useState("#ffffff");
   const settingsDispatch = useSettingsDispatch();
   const { snakeBody, ...other } = useSettings();
   const [snakeBodies, setSnakeBodies] = useState(snakeBody);
-  //$&
+  //
   const [state, setState] = useState({
     ...other,
   });
-
-  useEffect(() => {
-    let storedSettings = localStorage.getItem("snake-settings");
-    if (Object.is(storedSettings, null)) {
-      localStorage.setItem("snake-settings", JSON.stringify({ ...state, snakeBodies }));
-      storedSettings = { ...state, snakeBodies };
-    }
-  }, []);
 
   const handleAddSnakeBody = () => {
     setSnakeBodies((sb) => [...sb, { id: crypto.randomUUID(), number: 1, color: "#f1f5f9" }]);
@@ -47,15 +50,21 @@ export default function Settings({ onClose = () => {} }) {
 
   const handleClose = () => {
     onClose({ ...state, snakeBodies });
-    localStorage.setItem("snake-settings", JSON.stringify({ ...state, snakeBodies }));
+    localStorage.setItem("snake-settings", JSON.stringify({ ...state, snakeBody: snakeBodies }));
     //dispatch
     settingsDispatch({ type: "update-all", payload: { ...state, snakeBody: snakeBodies } });
   };
 
+  const handleDarkmode = (e) => {
+    const checked = e.target.checked;
+    setState((s) => ({ ...state, darkmode: checked }));
+    settingsDispatch({ type: "darkmode", payload: checked });
+  };
+
   return (
     <div
-      className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg min-h-[31.25rem] z-[101] drop-shadow-md rounded p-6"
-      style={{ color: `${state.darkmode ? "#c4c4c4" : "black"}`, background: `${state.darkmode ? "#23232b" : "white"}` }}
+      className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg z-[101] drop-shadow-md rounded p-6"
+      style={{ ...(state.darkmode ? mainDark : mainLight), top: snakeBodies.length > 8 ? "0px" : "" }}
     >
       <div className="relative w-full h-0 mx-[-12px]">
         <IoIosClose size="2rem" className="absolute z-[103] left-full cursor-pointer" onClick={handleClose} />
@@ -67,7 +76,8 @@ export default function Settings({ onClose = () => {} }) {
           type="checkbox"
           role="switch"
           id="flexSwitchCheckDefault"
-          onChange={(e) => setState((s) => ({ ...state, darkmode: e.target.checked }))}
+          checked={state.darkmode}
+          onChange={(e) => handleDarkmode(e)}
         />
       </div>
       <div className="flex items-center gap-4">

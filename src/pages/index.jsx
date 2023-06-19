@@ -3,9 +3,9 @@ import SnakeHead from "../components/SnakeHead";
 import SnakeTail from "../components/SnakeTail";
 import ScoreBoard from "../components/ScoreBoard";
 import Settings from "../components/Settings";
-import useCoordSetter from "../hooks/useCoordSetter";
+import useSnakeSetter from "../hooks/useSnakeSetter";
 import Apple from "../components/Apple";
-import { SettingsProvider, useSettings } from "../context/SettingsContext";
+import { SettingsProvider, useSettings, useSettingsDispatch } from "../context/SettingsContext";
 
 // const gameHeight = 400;
 // const gameWidth = 400;
@@ -28,11 +28,12 @@ const SnakeGame = () => {
   const [isScoreBoard, setIsScoreBoard] = useState(true);
   const [isSettings, setIsSettings] = useState(false);
   const [appleCoords, setAppleCoords] = useState({ x: 20, y: 20 });
-  const { coord, prevCoords, snakeLen, dispatch } = useCoordSetter();
+  const { coord, prevCoords, snakeLen, dispatch } = useSnakeSetter();
   // const [direction, setDirection] = useState("");
   const direction = useRef("");
   const gameIntervalId = useRef(0);
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
 
   const gameWidth = parseInt(settings.gridWidth) * (parseInt(settings.snakeSize) + 2);
   const gameHeight = parseInt(settings.gridHeight) * (parseInt(settings.snakeSize) + 2);
@@ -43,9 +44,12 @@ const SnakeGame = () => {
     window.addEventListener("keydown", (event) => keyHandler(event.key));
     randomApple();
 
-    const storedSettings = localStorage.getItem("snake-settings");
-    if (Object.is(null, storedSettings)) {
+    let storedSettings = localStorage.getItem("snake-settings");
+    if (Object.is(storedSettings, null)) {
+      localStorage.setItem("snake-settings", JSON.stringify(settings));
+      storedSettings = settings;
     }
+    settingsDispatch({ type: "update-all", payload: JSON.parse(storedSettings) });
 
     return () => {
       window.removeEventListener("keydown", (e) => {});
@@ -164,12 +168,11 @@ const SnakeGame = () => {
   //$&
 
   return (
-    <main className="flex relative justify-center items-center h-[100vh]">
+    <main className="flex relative justify-center items-center h-[100vh]" style={{ background: settings.darkmode ? "#151518" : "#e8e8e8" }}>
       {isSettings && (
         <Settings
           onClose={(settings) => {
             setIsSettings(false);
-            //$&
           }}
         />
       )}
