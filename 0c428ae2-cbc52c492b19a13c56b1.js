@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunksnake_game=self.webpackChunksnake_game||[]).push([[13],{3750:function(a,t,e){e.d(t,{L3d:function(){return r}});var n=e(4405);function r(a){return(0,n.w_)({tag:"svg",attr:{fill:"currentColor",viewBox:"0 0 16 16"},child:[{tag:"path",attr:{d:"M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"}}]})(a)}}}]);
+//# sourceMappingURL=0c428ae2-cbc52c492b19a13c56b1.js.map
