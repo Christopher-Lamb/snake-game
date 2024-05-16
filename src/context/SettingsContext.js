@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useReducer, useState } from "react";
 
 const initSnakeBody = { id: crypto.randomUUID(), number: 1, color: "#22c55e" };
 
@@ -20,7 +20,7 @@ const SettingsContext = createContext(null);
 const SettingsDispatchContext = createContext(null);
 
 export function SettingsProvider({ children }) {
-  const [settings, dispatch] = useReducer(settingsReducer, initialSettings);
+  const [settings, dispatch] = useReducer(settingsAction, initialSettings);
 
   return (
     <SettingsContext.Provider value={settings}>
@@ -28,16 +28,13 @@ export function SettingsProvider({ children }) {
     </SettingsContext.Provider>
   );
 }
-
 export function useSettings() {
   return useContext(SettingsContext);
 }
 
-export function useSettingsDispatch() {
-  return useContext(SettingsDispatchContext);
-}
+export const useSettingsDispatch = () => useContext(SettingsDispatchContext);
 
-const settingsReducer = (settings, action) => {
+const settingsAction = (settings, action) => {
   switch (action.type) {
     case "update-snakebody":
       return { ...settings, snakeBody: action.payload };
@@ -48,6 +45,9 @@ const settingsReducer = (settings, action) => {
     case "reset":
       return { ...initSnakeBody };
     case "darkmode":
+      document.body.setAttribute("data-theme", action.payload);
+      console.log(action.payload)
+
       return { ...settings, darkmode: action.payload };
   }
 };

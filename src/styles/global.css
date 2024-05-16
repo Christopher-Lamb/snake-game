@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+[data-theme="true"] {
+  background: #151518;
+}
+
+[data-theme="false"] {
+  background: #e8e8e8;
+}

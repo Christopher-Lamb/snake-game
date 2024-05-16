@@ -86,17 +86,12 @@ const SnakeGame = () => {
     }
 
     if (coord.x < 0 || coord.y < 0 || coord.x >= gameWidth || coord.y >= gameHeight) {
-      // dispatch({ type: "stop" });
-      // //$&
       gameStop();
     }
 
     const bodyNoHead = prevCoords.slice(1, prevCoords.length);
-    //$&
-    //$&
     const res = coordInArrChecker(coord, bodyNoHead);
     if (res) {
-      //$&
       clearInterval(gameIntervalId.current);
       gameStop();
     }
@@ -168,7 +163,7 @@ const SnakeGame = () => {
   //$&
 
   return (
-    <main className="flex relative justify-center items-center h-[100vh]" style={{ background: settings.darkmode ? "#151518" : "#e8e8e8" }}>
+    <main className="flex relative justify-center items-center h-[100vh] " style={{ background: settings.darkmode ? "#151518" : "#e8e8e8" }}>
       {isSettings && (
         <Settings
           onClose={(settings) => {
@@ -177,15 +172,8 @@ const SnakeGame = () => {
         />
       )}
       {isScoreBoard && <ScoreBoard score={snakeLen} onNewGame={gameStart} onSettings={() => setIsSettings(true)} />}
-      <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px`, background: settings.gameBoardColor }} className={`relative`}>
-        {/* <button className="absolute top-[-80px] left-[230px] bg-green-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStart}>
-          Start
-          </button>
-          <button className="absolute top-[-80px] left-[320px] bg-red-500 text-white px-2 py-1 text-lg active:translate-y-1" onClick={gameStop}>
-          Stop
-        </button> */}
-        {/* <div>{JSON.stringify(appleCoords)}</div>
-        <div>{JSON.stringify(coord)}</div> */}
+      <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px`, background: settings.gameBoardColor }} className={`relative border`}>
+
         <SnakeHead coords={coord} />
         <SnakeTail prevCoords={prevCoords} length={snakeLen} />
         <Apple coords={appleCoords} />

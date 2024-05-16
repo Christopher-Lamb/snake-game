@@ -63,7 +63,7 @@ export default function Settings({ onClose = () => {} }) {
 
   return (
     <div
-      className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg z-[101] drop-shadow-md rounded p-6"
+      className="bg-black flex flex-col gap-y-3 absolute w-full max-w-lg z-[101] drop-shadow-md rounded p-6 "
       style={{ ...(state.darkmode ? mainDark : mainLight), top: snakeBodies.length > 8 ? "0px" : "" }}
     >
       <div className="relative w-full h-0 mx-[-12px]">
