@@ -26,6 +26,7 @@
     "tailwindcss": "^3.3.2"
   },
   "devDependencies": {
+    "gatsby-plugin-manifest": "^5.13.1",
     "gh-pages": "^6.1.1"
   }
 }
