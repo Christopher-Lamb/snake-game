@@ -44,12 +44,13 @@ const SnakeGame = () => {
     window.addEventListener("keydown", (event) => keyHandler(event.key));
     randomApple();
 
-    let storedSettings = localStorage.getItem("snake-settings");
-    if (Object.is(storedSettings, null)) {
+    let storedSettings = JSON.parse(localStorage.getItem("snake-settings"));
+    if (!storedSettings) {
       localStorage.setItem("snake-settings", JSON.stringify(settings));
       storedSettings = settings;
+      // settingsDispatch({ type: "update-all", payload: JSON.parse(settings) });
     }
-    settingsDispatch({ type: "update-all", payload: JSON.parse(storedSettings) });
+    settingsDispatch({ type: "update-all", payload: storedSettings });
 
     return () => {
       window.removeEventListener("keydown", (e) => {});
@@ -173,7 +174,6 @@ const SnakeGame = () => {
       )}
       {isScoreBoard && <ScoreBoard score={snakeLen} onNewGame={gameStart} onSettings={() => setIsSettings(true)} />}
       <div style={{ width: `${gameWidth}px`, height: `${gameHeight}px`, background: settings.gameBoardColor }} className={`relative border`}>
-
         <SnakeHead coords={coord} />
         <SnakeTail prevCoords={prevCoords} length={snakeLen} />
         <Apple coords={appleCoords} />
